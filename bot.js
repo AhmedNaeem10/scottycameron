@@ -68,7 +68,7 @@ async function enable_cookie(){
     await page.click('#passwordNext');
     await page.waitForTimeout(2000);
     await page.goto("https://mail.google.com/mail/u/0/#inbox")
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(5000);
     await page.evaluate(()=>{
         let table = document.querySelectorAll('tbody');
         let tr = table[6].querySelector('tr')
