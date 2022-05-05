@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "dotenv": "^16.0.0",
+    "hcaptcha-solver": "^1.0.2",
+    "puppeteer": "^13.4.1",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.9.0",
+    "puppeteer-page-proxy": "^1.2.8"
+  }
+}
