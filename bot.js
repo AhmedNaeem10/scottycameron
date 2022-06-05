@@ -99,8 +99,8 @@ async function login(page){
     let button = await page.$('button[class="btn-text-login btn-bg-primary"]')
     await button.click()
     await page.waitForNavigation();
-    // url = 'https://www.scottycameron.com/store/gallery-putters/'
-    url = "https://www.scottycameron.com/store/speed-shop-creations/"
+    url = 'https://www.scottycameron.com/store/gallery-putters/'
+    // url = "https://www.scottycameron.com/store/speed-shop-creations/"
     await page.goto(url)
     await page.waitForTimeout(5000)
 }
@@ -130,7 +130,7 @@ async function checkout(page){
     let check = await page.$('input[id="checkoutTermsAndConditions-Box"]')
     await check.click()
     let submit = await page.$('button[id="btnCompleteCheckout"]')
-    // await submit.click()
+    await submit.click()
     
     // let skip = await page.$('div[class="button-submit button"]')
     // while(skip){
