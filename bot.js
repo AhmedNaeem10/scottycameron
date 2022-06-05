@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer-extra")
 const StealthPlugin = require('puppeteer-extra-plugin-stealth')
 require('dotenv').config();
 
-const timeout = 2 // after every 10 seconds, the bot reloads the page to check if putter is available
+const timeout = 1 // after every 10 seconds, the bot reloads the page to check if putter is available
 
 const username = process.env.scotty_email;
 const password = process.env.scotty_password;
@@ -84,9 +84,9 @@ async function enable_cookie(){
     await page.waitForTimeout(3000);
     const pages = await browser.pages();
     const page2 = await pages[pages.length - 1];
+    page2.setDefaultTimeout(0);
     await clickByText(page2, "Set Cookie", 'span');
     return page2;
-    // return page;
 }
 
 
@@ -99,6 +99,10 @@ async function login(page){
     let button = await page.$('button[class="btn-text-login btn-bg-primary"]')
     await button.click()
     await page.waitForNavigation();
+    // url = 'https://www.scottycameron.com/store/gallery-putters/'
+    url = "https://www.scottycameron.com/store/speed-shop-creations/"
+    await page.goto(url)
+    await page.waitForTimeout(5000)
 }
 
 async function getAccess(page){
@@ -111,18 +115,23 @@ async function checkout(page){
     console.log('checking out ...')
     checkout_url = "https://www.scottycameron.com/store/checkout/index/"
     await page.goto(checkout_url)
-    await page.waitForNavigation();
-    await page.waitForSelector('input[id="CardHolderName"]', {visible: true, timeout: 3000 });
+    // await page.waitForNavigation();
+    // await page.waitForSelector('input[id="radioPaymentProviders1"][value="MASTERCARD"]', {visible: true, timeout: 300000 });
+    // await page.click('input[id="radioPaymentProviders1"][value="MASTERCARD"]')
+    // await page.click('input[id="radioPaymentProviders1"][value="MASTERCARD"]')
+    // await page.click('input[id="radioPaymentProviders1"][value="MASTERCARD"]')
+    await page.waitForSelector('input[id="CardHolderName"]', {visible: true, timeout: 300000 });
     await page.type('input[id="CardHolderName"]', name, {delay: 1})
     await page.type('input[id="CredidCardNumber"]', card_num, {delay: 1})
     await page.type('input[id="CredidCardExpMonth"]', month, {delay: 1})
     await page.type('input[id="CredidCardExpYear"]', year, {delay: 1})
     await page.type('input[id="CredidCardCVCNumber"]', code, {delay: 1})
-    await page.waitForSelector('input[id="checkoutTermsAndConditions-Box"]', {visible: true, timeout: 3000 });
+    await page.waitForSelector('input[id="checkoutTermsAndConditions-Box"]', {visible: true, timeout: 300000 });
     let check = await page.$('input[id="checkoutTermsAndConditions-Box"]')
     await check.click()
     let submit = await page.$('button[id="btnCompleteCheckout"]')
-    await submit.click()
+    // await submit.click()
+    
     // let skip = await page.$('div[class="button-submit button"]')
     // while(skip){
     //     await skip.click()
@@ -140,10 +149,14 @@ async function track(page){
     while(check){
         putters = await page.$$('li[data-test-selector="listProductsList"]')
         for(let putter of putters){
-            let div = await putter.$('div[class="tocart"]')
-            if(div){
+            let div = await putter.$$('div[class="tocart"]')
+            if(div.length){
                 // putter is available
-                await div.click()
+                if(div.length >= 2){
+                    await div[2].click()
+                }else{
+                    await div[div.length - 1].click()
+                }
                 await page.waitForTimeout(1000);
                 await checkout(page)
                 check = false;
@@ -169,10 +182,6 @@ async function home(page){
     await getAccess(page)
     await page.waitForTimeout(2000);
     await login(page);
-    url = 'https://www.scottycameron.com/store/gallery-putters/'
-    // url = "https://www.scottycameron.com/store/speed-shop-creations/"
-    await page.goto(url)
-    await page.waitForTimeout(5000)
     return page;
 }
 async function main() {
